@@ -8,25 +8,39 @@ export default function Kalkulator() {
   const [aritmatika, setAritmatika] = useState('+')
   const [result, setResult] = useState('')
 
-  const submitAritmatika = () => { 
-    if (variableOne && variableTwo) { 
-    if (aritmatika == '+') { 
-      const plus = Number(variableOne) + Number(variableTwo) ; 
-      setResult(plus) 
-    } else if (aritmatika === '-' ) { 
-      const minus = Number(variableOne) - Number(variableTwo) ; 
-      setResult(minus) 
-    }  else if (aritmatika === '*' ) { 
-      const kali = Number(variableOne) * Number(variableTwo) ; 
-      setResult(kali) 
-    }  else if (aritmatika === '/' ) { 
-      const bagi = Number(variableOne) / Number(variableTwo) ; 
-      setResult(bagi)
-    } else { 
-      alert('Aritmatika hanya bisa di isi oleh +, -, *, /') 
+  const submitAritmatika = () => {
+    if (variableOne && variableTwo) {
+      const num1 = Number(variableOne)
+      const num2 = Number(variableTwo)
+      let hasil = 0
+
+      switch (aritmatika) {
+        case '+':
+          hasil = num1 + num2
+          break
+        case '-':
+          hasil = num1 - num2
+          break
+        case '*':
+          hasil = num1 * num2
+          break
+        case '/':
+          if (num2 === 0) {
+            alert('Tidak bisa membagi dengan nol!')
+            return
+          }
+          hasil = num1 / num2
+          break
+        default:
+          alert('Operator tidak valid!')
+          return
+      }
+
+      setResult(hasil.toString())
+    } else {
+      alert('Harap isi kedua bilangan terlebih dahulu!')
     }
-   }
-   }
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-white-900">
