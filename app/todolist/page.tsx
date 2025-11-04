@@ -4,35 +4,22 @@ import React, { useState, useEffect } from 'react'
 function Todolist() {
     const [input, setInput] = useState('')
     const [dataTodo, setDataTodo] = useState<string[]>([])
-    const [searchTerm, setSearchTerm] = useState('')
-    const [filteredTodo, setFilteredTodo] = useState<string[]>([])
+    const [search, setSearch] = useState('')
 
-    useEffect(() => {
-        const savedData = localStorage.getItem('dataTodo')
-        if (savedData) {
-            const parsedData = JSON.parse(savedData)
-            setDataTodo(parsedData)
-            setFilteredTodo(parsedData)
-        }
+    useEffect(() => { //use effect : menjalakan function ketika pertama kali dibuka
+        const storedData = localStorage.getItem('dataTodo')
+        if (storedData) {
+            setDataTodo(JSON.parse(storedData))
+        } //kurung kurawal harus berpasangan
     }, [])
-
-    useEffect(() => {
-        localStorage.setItem('dataTodo', JSON.stringify(dataTodo))
-        setFilteredTodo(dataTodo) 
-    }, [dataTodo])
 
     const addDataTodo = () => {
         if (input.length > 0) {
-            const isDuplicate = dataTodo.includes(input)
-            if (isDuplicate) {
-                alert('Todo sudah ada, masukkan todo yang berbeda!')
-                return
-            }
-
-            setDataTodo([...dataTodo, input])
             setInput('')
+            setDataTodo([...dataTodo, input])
+            localStorage.setItem('dataTodo', JSON.stringify([...dataTodo, input]))
         } else {
-            alert('Masukkan Todo Terlebih Dahalu')
+            alert('Masukan Todo Terebih Dahulu')
         }
     }
 
@@ -40,18 +27,12 @@ function Todolist() {
         const tempData = [...dataTodo]
         const removeData = tempData.filter((_val, idx) => idx !== index)
         setDataTodo(removeData)
+        localStorage.setItem('dataTodo', JSON.stringify(removeData))
     }
 
-    const handleSearch = () => {
-        if (searchTerm.trim() === '') {
-            setFilteredTodo(dataTodo)
-        } else {
-            const filtered = dataTodo.filter(todo =>
-                todo.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            setFilteredTodo(filtered)
-        }
-    }
+    const filteredData = dataTodo.filter(todo =>
+        todo.toLowerCase().includes(search.toLowerCase())
+    )  // includes untuk mencari data tanpa melihat kalimat awal 
 
     return (
         <div className='w-1/2 m-auto p-[64px]'>
@@ -84,21 +65,19 @@ function Todolist() {
                 <div className='flex items-center gap-2 mb-[32px]'>
                     <div className='flex-1'>
                         <input
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
                             className='w-full border border-[#E4E4E4]
                 rounded-lg py-[8px] px-[16px]'
-                            placeholder='Cari Todo...' />
+                            placeholder='Cari Todo' />
                     </div>
                     <button
-                        className='bg-[#3A8DFF] text-white h-[40px] px-[16px] rounded-lg text-center'
-                        onClick={handleSearch}
-                    >
-                        Cari
+                        className=''
+                        onClick={addDataTodo} >
                     </button>
                 </div>
 
-                {filteredTodo.map((value, index) => {
+                {filteredData.map((value, index) => { //mlakuka mapping data - pemetaan data //memfilter data
                     return (
                         <div key={String(index)} className='flex items-center
                           justify-between mb-[16px]'>
@@ -114,6 +93,6 @@ function Todolist() {
             </div>
         </div>
     )
-}
 
+}
 export default Todolist
